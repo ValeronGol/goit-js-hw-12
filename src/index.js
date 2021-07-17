@@ -16,29 +16,33 @@ searchBox.addEventListener('input',_.debounce(onSearch, DEBOUNCE_DELAY));
 
 function onSearch(event){
   event.preventDefault();
-    const countryName = event.target.value
-API.fetchCountries(countryName)
+    const countryName = event.target.value.trim();
+   if(countryName ==''){
+   return clearContainer();
+   }else{API.fetchCountries(countryName)
     .then(response => {
       if (response.length > 10) {
             Notiflix.Notify.info('Too many matches found. Please enter a more specific name.'); 
-      } else if (response.length === 1) {
+      }else if (response.status === 404) {
+        Notiflix.Notify.failure('Oops, there is no country with that name')
+      } 
+      else if (response.length ==1) {
         renderCountry(response[0]);
-      } else{
+      } 
+      else{
         renderCountriesList(response);
       }
       
     })
     .catch(error => {
       console.log(error);
-      Notiflix.Notify.failure('Oops, there is no country with that name');
-    })
-    .finally(clearContainer());
+    }).finally(clearContainer());
+  }
 }
 
 
 function renderCountry(country) {
   const lang = country.languages.map(l => l.name).join(', ');
-  console.log(lang);
   const markup = countryCard({country, lang});
   countryInfo.insertAdjacentHTML('beforeend', markup);
   }
