@@ -23,9 +23,7 @@ function onSearch(event){
     .then(response => {
       if (response.length > 10) {
             Notiflix.Notify.info('Too many matches found. Please enter a more specific name.'); 
-      }else if (response.status === 404) {
-        Notiflix.Notify.failure('Oops, there is no country with that name')
-      } 
+      }
       else if (response.length ==1) {
         renderCountry(response[0]);
       } 
